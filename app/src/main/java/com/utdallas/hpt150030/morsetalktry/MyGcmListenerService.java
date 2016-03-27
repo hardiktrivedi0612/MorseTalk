@@ -19,7 +19,8 @@ import com.google.android.gms.gcm.GcmListenerService;
 public class MyGcmListenerService extends GcmListenerService {
     private static final String TAG = "MyGcmListenerService";
     private long[] vibratePattern;
-    private Vibrator vibrator ;
+    private Vibrator vibrator;
+    private DBOperations dbOperations;
 
     /**
      * Called when message is received.
@@ -71,11 +72,15 @@ public class MyGcmListenerService extends GcmListenerService {
                 PendingIntent.FLAG_ONE_SHOT);
 
 
-        vibratePattern = new long[(message.length() * 2) + 1];
+        String messageParts[] = message.split(":");
+        String from = messageParts[0];
+        String messagePattern = messageParts[1];
+
+        vibratePattern = new long[(messagePattern.length() * 2) + 1];
         int count = 0;
         vibratePattern[count++] = 0;
         //Toast.makeText(MorseActivity.this, strBuilder.toString(), Toast.LENGTH_SHORT).show();
-        for (char c : message.toString().toCharArray()) {
+        for (char c : messagePattern.toCharArray()) {
             switch (c) {
                 case 'd':
                     vibratePattern[count++] = 150;
@@ -97,13 +102,23 @@ public class MyGcmListenerService extends GcmListenerService {
 
         }
 
+
         vibrator.vibrate(vibratePattern, -1);
+
+        dbOperations = new DBOperations(this);
+        Message msg = new Message();
+        msg.setUser(from);
+        msg.setMessage(messagePattern);
+        msg.setSentBy("N");
+        msg.setTime(new java.sql.Timestamp(new java.util.Date().getTime()).toString());
+        dbOperations.insertMessage(msg);
+
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_cast_dark)
                 .setContentTitle("MorseTalk Message")
-                .setContentText(message)
+                .setContentText("From:"+from)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent);

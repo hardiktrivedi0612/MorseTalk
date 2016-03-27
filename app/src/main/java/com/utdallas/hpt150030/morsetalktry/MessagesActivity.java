@@ -7,6 +7,10 @@ import android.os.Vibrator;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,22 +18,28 @@ import java.util.List;
 /**
  * Created by roshan on 27/03/16.
  */
-public class MessagesActivity extends Activity
-{
+public class MessagesActivity extends Activity {
     private MessageAdapter msgAdapter;
     private Vibrator vibrator;
+    private TextView header;
+    private MorseDecoder morseDecoder;
 
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.messages_layout);
 
-        ListView lv = (ListView)findViewById(R.id.messages_list);
+        String user = getIntent().getStringExtra(Constants.EMAIL);
+
+        morseDecoder = new MorseDecoder();
+
+        ListView lv = (ListView) findViewById(R.id.messages_list);
         msgAdapter = new MessageAdapter();
+
+        header = (TextView) findViewById(R.id.head);
+        header.setText(user);
 
 //        Bundle extras = getIntent().getExtras();
 //        String user = extras.getString("USER");
-        String user = getIntent().getStringExtra(Constants.EMAIL);
 
         msgAdapter.addMessages(dbOperation(user));
 
@@ -38,8 +48,7 @@ public class MessagesActivity extends Activity
         lv.setAdapter(msgAdapter);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view, int position,long id)
-            {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Message msg = (Message) msgAdapter.getItem(position);
 
                 long[] vibratePattern = new long[(msg.getMessage().length() * 2) + 1];
@@ -71,10 +80,23 @@ public class MessagesActivity extends Activity
                 vibrator.vibrate(vibratePattern, -1);
             }
         });
+
+        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Message msg = (Message) msgAdapter.getItem(position);
+                String message = msg.getMessage();
+                String response = morseDecoder.decode(message);
+                if(null == response){
+                    response = "Invalid Morse Code intercepted";
+                }
+                Toast.makeText(MessagesActivity.this, response , Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
     }
 
-    public List<Message> dbOperation(String user)
-    {
+    public List<Message> dbOperation(String user) {
         DBOperations db = new DBOperations(MessagesActivity.this);
         return db.getAllMessages(user);
     }

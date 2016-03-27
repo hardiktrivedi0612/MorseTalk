@@ -24,6 +24,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ChatsScreenActivity extends AppCompatActivity {
@@ -56,7 +57,8 @@ public class ChatsScreenActivity extends AppCompatActivity {
         });
 
         dbOperations = new DBOperations(ChatsScreenActivity.this);
-        chats = dbOperations.getAllChats();
+        chats = new ArrayList<>();
+        dbOperations.getAllChats(chats);
 
         listView = (ListView) findViewById(R.id.listView);
         chatsAdapter = new ChatsScreenAdapter(this, R.id.listView, chats);
@@ -86,6 +88,8 @@ public class ChatsScreenActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
+        Log.d(TAG, "Restart called");
+        dbOperations.getAllChats(chats);
         chatsAdapter.notifyDataSetChanged();
     }
 

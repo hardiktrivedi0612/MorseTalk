@@ -55,11 +55,12 @@ public class DBOperations
         return null;
     }
 
-    public List<String> getAllChats()
+    public void getAllChats(List<String> chats)
     {
         try {
             open();
-            List<String> chats = new ArrayList<String>();
+            chats.clear();
+//            List<String> chats = new ArrayList<String>();
             Cursor cursor = database.query(true, DatabaseSkeleton.DB_NAME, new String[]{DatabaseSkeleton.USER}, null, null, null, null, DatabaseSkeleton.MSG_ID + " DESC", null);
             cursor.moveToFirst();
 
@@ -70,11 +71,11 @@ public class DBOperations
             }
             cursor.close();
             close();
-            return chats;
+//            return chats;
         } catch (SQLException e) {
             Log.d(TAG, e.toString());
         }
-        return null;
+//        return null;
     }
 
     private Message parseMessage(Cursor cursor)

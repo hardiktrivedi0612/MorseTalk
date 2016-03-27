@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,6 +24,10 @@ public class ChatsScreenAdapter extends ArrayAdapter<String> {
         super(context, textViewResourceId, objects);
         this.mContext = context;
         this.list = objects;
+    }
+
+    public void setList(List<String> list) {
+        this.list = list;
     }
 
     class ViewHolder {
