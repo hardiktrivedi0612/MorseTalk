@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">MorseTalk</string>
+    <string name="email_text">Enter Email ID:</string>
+    <string name="submit_text">SUBMIT</string>
+    <string name="send_text">SEND</string>
+    <string name="title_activity_chats_screen">ChatsScreen</string>
+    <string name="play">Play</string>
+</resources>
