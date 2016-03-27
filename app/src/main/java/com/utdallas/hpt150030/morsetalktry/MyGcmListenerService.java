@@ -83,20 +83,20 @@ public class MyGcmListenerService extends GcmListenerService {
         for (char c : messagePattern.toCharArray()) {
             switch (c) {
                 case 'd':
-                    vibratePattern[count++] = 150;
-                    vibratePattern[count++] = 150;
+                    vibratePattern[count++] = 225;
+                    vibratePattern[count++] = 225;
                     break;
                 case 'u':
-                    vibratePattern[count++] = 450;
-                    vibratePattern[count++] = 150;
+                    vibratePattern[count++] = 675;
+                    vibratePattern[count++] = 225;
                     break;
                 case 'c':
                     vibratePattern[count++] = 0;
-                    vibratePattern[count++] = 450;
+                    vibratePattern[count++] = 675;
                     break;
                 case 'w':
                     vibratePattern[count++] = 0;
-                    vibratePattern[count++] = 1050;
+                    vibratePattern[count++] = 1575;
                     break;
             }
 
